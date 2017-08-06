@@ -1,0 +1,35 @@
+group 'Test_Epam'
+version '1.0-SNAPSHOT'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: 'latest.integration'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: 'latest.integration'
+    compile group: 'org.testng', name: 'testng', version: 'latest.integration'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+}
