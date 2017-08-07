@@ -16,7 +16,7 @@ public class Browser {
         return Driver.getWebDriver().getTitle();
     }
     public static void quit(){
-        if (Driver.getWebDriver() != null){
+        if (Driver.getWebDriver(false) != null){
             Log.info("Close browser");
             Driver.getWebDriver().quit();
             Driver.setWebDriver(null);

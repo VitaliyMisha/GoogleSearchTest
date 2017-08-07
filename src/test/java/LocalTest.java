@@ -8,18 +8,12 @@ import pageobjects.GoogleSearchPage;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 @Listeners({TestListener.class})
 public class LocalTest {
 
-    private static GoogleSearchPage searchPage;
     private static final String SEARCH_PATTERN = "automation";
 
-    @BeforeMethod
-    public static void beforeMethod(){
-        searchPage= new GoogleSearchPage();
-    }
-    @AfterMethod
+   @AfterMethod
     public static void afterMethod(){
         Browser.quit();
     }
@@ -27,31 +21,34 @@ public class LocalTest {
     @Test
     @Parameters("searchPattern")
     public void testCheckBrowserTitleAfterSearch(@Optional(SEARCH_PATTERN) String searchPattern){
-        searchPage.open().search(searchPattern);
+        new GoogleSearchPage().open().search(searchPattern);
         Assert.assertTrue(Browser.getTitle().startsWith(searchPattern));
     }
 
     @Test
-    @Parameters({"searchPattern","index","expectedUrl"})
+    @Parameters({"searchPattern", "index", "expectedUrl"})
     public void testVerifySecondUrl(@Optional(SEARCH_PATTERN) String searchPattern,@Optional("0") String index,
                                     @Optional("https://en.wikipedia.org/wiki/Automation") String expectedUrl){
-        String urlText = searchPage.open().search(searchPattern).getResultUrlTextByIndex(Integer.parseInt(index));
+        String urlText = new GoogleSearchPage().open().search(searchPattern).getResultUrlTextByIndex(Integer.parseInt(index));
         Assert.assertTrue(urlText.toLowerCase().contains(expectedUrl.toLowerCase()),String.format("%s expected url not equal to %s actual url",expectedUrl,urlText));
     }
+
     @Test
-    @Parameters({"searchPattern","maxCountPage","expectedPageTitle"})
+    @Parameters({"searchPattern", "maxCountPage", "expectedPageTitle"})
     public void testFindExpectedTitleInRangePages(@Optional(SEARCH_PATTERN) String searchPattern,@Optional("5") String maxCountPage,@Optional("Automation Direct") String expectedPageTitle){
-        String result = searchPage.open().search(searchPattern).getSearchTitleFromResults(expectedPageTitle,Integer.parseInt(maxCountPage));
+        String result = new GoogleSearchPage().open().search(searchPattern).getSearchTitleFromResults(expectedPageTitle,Integer.parseInt(maxCountPage));
         Assert.assertNotNull(result,String.format("Cannot find %s link from 1 to %s pages",expectedPageTitle, maxCountPage));
     }
-    @DataProvider(name = "linkTexts",parallel=true)
+    @DataProvider(name = "linkTexts", parallel = true)
     public Object[] getLinkTexts() {
-        ArrayList<String> linkTexts = new GoogleSearchPage().open().search(SEARCH_PATTERN).getResultLinkTexts();
+        ArrayList<String> linkTexts = (new GoogleSearchPage()).open().search(SEARCH_PATTERN).getResultLinkTexts();
         Collection<Object[]> data = new ArrayList<>();
         linkTexts.forEach(item -> data.add(new Object[]{item}));
+        Browser.quit();
         return linkTexts.toArray();
     }
-    @Test(dataProvider = "linkTexts",priority = 1,threadPoolSize = 10)
+
+    @Test(dataProvider = "linkTexts")
     @Parameters("linkText")
     public void testVerifyResultLinksAfterSearch(String linkText){
         Log.info(String.format("Verify if %s searchPatter exists in %s",SEARCH_PATTERN,linkText));

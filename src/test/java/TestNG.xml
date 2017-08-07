@@ -1,8 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-<suite name="LocalTest"  parallel="methods" thread-count="3">
-    <test name="Test">
-        <classes>
-            <class name="LocalTest"/>
-        </classes>
-    </test>
-</suite>

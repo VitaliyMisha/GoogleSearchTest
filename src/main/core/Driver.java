@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Driver {
-    private static ThreadLocal<WebDriver> webDriver = new ThreadLocal<>();
+    private static final ThreadLocal<WebDriver> webDriver = new ThreadLocal<>();
 
     public enum BrowserType {
         CHROME("Chrome", new String[]{"--disable-extensions", "--allow-running-insecure-content",
@@ -39,7 +39,7 @@ public class Driver {
         }
 
     }
-    static WebDriver getWebDriver() {
+    public static WebDriver getWebDriver() {
         if (webDriver.get() == null){
             BrowserType type = BrowserType.findByName(Prop.get("browser"));
             switch (type){
@@ -69,10 +69,16 @@ public class Driver {
                 }
 
             }
+            webDriver.get().manage().timeouts().implicitlyWait(Long.parseLong(Prop.get("defaultImplicitWait")), TimeUnit.SECONDS);
+            webDriver.get().manage().timeouts().pageLoadTimeout(Long.parseLong(Prop.get("pageLoadTimeout")),TimeUnit.SECONDS);
         }
-        webDriver.get().manage().timeouts().implicitlyWait(Long.parseLong(Prop.get("defaultImplicitWait")), TimeUnit.SECONDS);
-        webDriver.get().manage().timeouts().pageLoadTimeout(Long.parseLong(Prop.get("pageLoadTimeout")),TimeUnit.SECONDS);
         return webDriver.get();
+    }
+    public static WebDriver getWebDriver(boolean createNewDriver){
+        if (!createNewDriver){
+            return webDriver.get();
+        }
+        return getWebDriver();
     }
 
     static void setWebDriver(WebDriver driver) {
