@@ -1,5 +1,8 @@
 package core;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
 /**
  * Created by Виталий on 02.04.2017.
  */
@@ -22,6 +25,9 @@ public class Browser {
             Driver.setWebDriver(null);
         }
 
+    }
+    public static void scrollToElement(WebElement element){
+        ((JavascriptExecutor) Driver.getWebDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
 }

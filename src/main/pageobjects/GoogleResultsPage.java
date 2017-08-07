@@ -1,6 +1,7 @@
 package pageobjects;
 
 import core.BasePage;
+import core.Browser;
 import core.Log;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -56,6 +57,7 @@ public class GoogleResultsPage extends BasePage{
     }
     private void clickToNextPage(ArrayList<String> actualResultLinks){
         Log.info("Click to the next page");
+        Browser.scrollToElement(nextPageButton);
         nextPageButton.click();
         int tries = 0;
         while(actualResultLinks==getResultLinkTexts() || tries<10 ) {
