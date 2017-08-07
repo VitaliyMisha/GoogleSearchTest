@@ -50,6 +50,7 @@ test-output
 target
 build
 bin
+out
 
 # Java Class files
 *.bak

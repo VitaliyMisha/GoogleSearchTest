@@ -3,6 +3,7 @@ package pageobjects;
 import core.BasePage;
 import core.Browser;
 import core.Log;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -14,8 +15,6 @@ public class GoogleSearchPage extends BasePage {
 
     @FindBy(id = "lst-ib")
     private WebElement searchField;
-    @FindBy(className = "lsb")
-    private WebElement searchButton;
 
     public GoogleSearchPage open() {
         String url = "https://www.google.com.ua/";
@@ -26,8 +25,7 @@ public class GoogleSearchPage extends BasePage {
 
     public GoogleResultsPage search(String searchPattern){
         Log.info(String.format("Search for '%s' pattern", searchPattern));
-        searchField.sendKeys(searchPattern);
-        searchButton.click();
+        searchField.sendKeys(searchPattern+ Keys.ENTER);
         return new GoogleResultsPage();
     }
 }

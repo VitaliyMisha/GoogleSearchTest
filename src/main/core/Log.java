@@ -7,7 +7,6 @@ public class Log extends Logger{
     protected Log(String name) {
         super(name);
     }
-
     private static String getCallerClassName() {
         StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
         for (int i = 1; i < stElements.length; i++) {

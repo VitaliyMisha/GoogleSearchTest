@@ -16,9 +16,12 @@ public class Browser {
         return Driver.getWebDriver().getTitle();
     }
     public static void quit(){
-        Log.info("Close browser");
-        Driver.getWebDriver().quit();
-        Driver.setWebDriver(null);
+        if (Driver.getWebDriver() != null){
+            Log.info("Close browser");
+            Driver.getWebDriver().quit();
+            Driver.setWebDriver(null);
+        }
+
     }
 
 }

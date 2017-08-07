@@ -7,7 +7,7 @@ import pageobjects.GoogleSearchPage;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+
 
 @Listeners({TestListener.class})
 public class LocalTest {
@@ -17,9 +17,9 @@ public class LocalTest {
 
     @BeforeMethod
     public static void beforeMethod(){
-        searchPage = new GoogleSearchPage();
+        searchPage= new GoogleSearchPage();
     }
-    @AfterClass
+    @AfterMethod
     public static void afterMethod(){
         Browser.quit();
     }
@@ -31,20 +31,6 @@ public class LocalTest {
         Assert.assertTrue(Browser.getTitle().startsWith(searchPattern));
     }
 
-    @DataProvider(name = "linkTexts")
-    public static Iterator<Object[]> getLinkTexts() {
-        ArrayList<String> linkTexts = searchPage.open().search(SEARCH_PATTERN).getResultLinkTexts();
-        Collection<Object[]> data = new ArrayList<>();
-        linkTexts.forEach(item -> data.add(new Object[]{item}));
-        return data.iterator();
-    }
-
-    @Test(dataProvider = "linkTexts")
-    @Parameters("linkText")
-    public void testVerifyResultLinksAfterSearch(String linkText){
-        Log.info(String.format("Verify if %s searchPatter exists in %s",SEARCH_PATTERN,linkText));
-        Assert.assertTrue(linkText.toLowerCase().contains(SEARCH_PATTERN.toLowerCase()), String.format("Cannot found '%s' search pattern in '%s' link", SEARCH_PATTERN, linkText));
-    }
     @Test
     @Parameters({"searchPattern","index","expectedUrl"})
     public void testVerifySecondUrl(@Optional(SEARCH_PATTERN) String searchPattern,@Optional("0") String index,
@@ -57,5 +43,18 @@ public class LocalTest {
     public void testFindExpectedTitleInRangePages(@Optional(SEARCH_PATTERN) String searchPattern,@Optional("5") String maxCountPage,@Optional("Automation Direct") String expectedPageTitle){
         String result = searchPage.open().search(searchPattern).getSearchTitleFromResults(expectedPageTitle,Integer.parseInt(maxCountPage));
         Assert.assertNotNull(result,String.format("Cannot find %s link from 1 to %s pages",expectedPageTitle, maxCountPage));
+    }
+    @DataProvider(name = "linkTexts",parallel=true)
+    public Object[] getLinkTexts() {
+        ArrayList<String> linkTexts = new GoogleSearchPage().open().search(SEARCH_PATTERN).getResultLinkTexts();
+        Collection<Object[]> data = new ArrayList<>();
+        linkTexts.forEach(item -> data.add(new Object[]{item}));
+        return linkTexts.toArray();
+    }
+    @Test(dataProvider = "linkTexts",priority = 1,threadPoolSize = 10)
+    @Parameters("linkText")
+    public void testVerifyResultLinksAfterSearch(String linkText){
+        Log.info(String.format("Verify if %s searchPatter exists in %s",SEARCH_PATTERN,linkText));
+        Assert.assertTrue(linkText.toLowerCase().contains(SEARCH_PATTERN.toLowerCase()), String.format("Cannot found '%s' search pattern in '%s' link", SEARCH_PATTERN, linkText));
     }
 }
